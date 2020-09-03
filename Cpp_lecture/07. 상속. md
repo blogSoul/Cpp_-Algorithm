@@ -1,0 +1,179 @@
+# 😎07. 상속😎
+
+프로그램 전체 기능의 처리를, 프로그램의 흐름을 담당하는 클래스를 가리켜 컨트롤 클래스라고 합니다.  
+
+```cpp
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class Person {
+private:
+	int age;
+	char name[50];
+public:
+	Person(int myage, char *myname) : age(myage) {
+		strcpy(name, myname);
+	}
+	void WhatYourName() const {
+		cout << "My name is " << name << endl;
+	}
+	void HowOldAreYou() const {
+		cout << "I`m " << age << " years old" << endl;
+	}
+};
+
+class UnivStudent : public Person {
+private:
+	char major[50]; // 전공과목
+public: 
+	UnivStudent(char *myname, int myage, char *mymajor) : Person(myage, myname) {
+		strcpy(major, mymajor);
+	} 
+	// 이니셜라이저를 통해서 유도 클래스는 기초 클래스의 생성자를 명시적으로 호출해야 합니다.
+	// 유도 클래스의 생성자는 기초 클래스의 멤버를 초기화할 의무를 가지고 있습니다. 
+	// 단! 기초 클래스의 생성자를 명시적으로 호출해서 초기화해야 합니다.
+	void WhoAreYou() const {
+		WhatYourName();
+		HowOldAreYou();
+		cout << "My major is" << major << endl;
+	}
+};
+
+int main(void) {
+	char name[5] = "soul";
+	char name2[5] = "soul";
+	Person num(20, name);
+	UnivStudent ustd1("Lee", 22, "computer");
+	return 0;
+}
+```
+
+## 상속에 대하여
+
+이니셜라이저를 통해서 유도 클래스는 기초 클래스의 생성자를 명시적으로 호출해야 합니다.  
+유도 클래스의 생성자는 기초 클래스의 멤버를 초기화할 의무를 가지고 있습니다.   
+단! 기초 클래스의 생성자를 명시적으로 호출해서 초기화해야 합니다.  
+private 멤버는 유도 클래스에서도 접근이 불가능하므로, 생성자의 호출을 통해서 기초 클래스의 멤버를 초기화해야 합니다.  
+
+```cpp
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class Person {
+private:
+	int age;
+	char name[50];
+public:
+	Person(int myage, const char *myname) : age(myage) {
+		strcpy(name, myname);
+	}
+	void WhatYourName() const {
+		cout << "My name is " << name << endl;
+	}
+	void HowOldAreYou() const {
+		cout << "I`m " << age << " years old" << endl;
+	}
+};
+
+class UnivStudent : public Person {
+private:
+	char major[50]; // 전공과목
+public: 
+	UnivStudent(const char *myname, int myage, const char *mymajor) : Person(myage, myname) {
+		strcpy(major, mymajor);
+	} 
+	// 이니셜라이저를 통해서 유도 클래스는 기초 클래스의 생성자를 명시적으로 호출해야 합니다.
+	// 유도 클래스의 생성자는 기초 클래스의 멤버를 초기화할 의무를 가지고 있습니다. 
+	// 단! 기초 클래스의 생성자를 명시적으로 호출해서 초기화해야 합니다.
+	void WhoAreYou() const {
+		WhatYourName();
+		HowOldAreYou();
+		cout << "My major is" << major << endl;
+	}
+};// private 멤버는 유도 클래스에서도 접근이 불가능하므로, 생성자의 호출을 통해서 기초 클래스의 멤버를 초기화해야 합니다.
+
+int main(void) {
+	Person num(20, "Lee");
+	num.HowOldAreYou();
+	UnivStudent ustd1("Lee", 22, "computer");
+	ustd1.WhoAreYou();
+	return 0;
+}
+```
+
+* 유도 클래스의 객체 생성 과정  
+
+1. 메모리 공간의 할당
+2. 유도 클래스의 생성자 호출
+3. 기초 클래스의 생성자 호출 및 실행
+4. 유도 클래스의 생성자 실행
+
+유도 클래스의 소멸자가 실행된 이후에 기초 클래스의 소멸자가 실행이 됩니다.  
+스택에 생성된 객체의 소멸 순서는 생성 순서와 반대입니다.  
+
+## protected 선언과 세 가지 형태의 상속
+
+private을 기준으로 보면, protected는 private과 달리 상속관계에서의 접근을 허용합니다.  
+접근 제어 권한을 그대로 상속합니다. 단, private은 접근불가로 상속합니다.  
+protected보다 접근의 범위가 넓은 멤버는 protected로 상속합니다. 단, private은 접근불가로 상속합니다.  
+private보다 접근의 범위가 넓은 멤버는 protected로 상속합니다. 단, private은 접근불가로 상속합니다.  
+
+```cpp
+#include<iostream>
+using namespace std;
+
+class Base {
+private:
+	int num1 = 1;
+protected:
+	int num2;
+public:
+	int num3;
+	Base(int num2, int num3) : num2(num2), num3(num3) {}
+	void ShowData() {
+		cout << num1 << ", " << num2 << ", " << num3 << endl;
+	}
+};
+
+class Derived1 : public Base {
+public:
+	Derived1(int num2, int num3) : Base(num2, num3) {}
+	void ShowBaseMember() {
+		// cout << num1; 컴파일 에러 
+		cout << num2 << endl;
+		cout << num3 << endl;
+	}
+}; // 접근 제어 권한을 그대로 상속합니다. 단, private은 접근불가로 상속합니다.
+
+class Derived2 : protected Base {
+public:
+	void ShowBaseMember() {
+		//cout << num1; 컴파일 에러 
+		cout << num2;
+		cout << num3;
+	}
+}; // protected보다 접근의 범위가 넓은 멤버는 protected로 상속합니다. 단, private은 접근불가로 상속합니다.
+
+class Derived3 : private Base {
+public:
+	void ShowBaseMember() {
+		// cout << num1; 컴파일 에러
+		cout << num2;
+		cout << num3;
+	}
+}; // private보다 접근의 범위가 넓은 멤버는 protected로 상속합니다. 단, private은 접근불가로 상속합니다.
+
+int main(void) {
+	Derived1 num1(2,3);
+	num1.ShowBaseMember();
+	return 0;
+}
+```
+
+## 상속의 기본 조건 
+  
+1. IS-A 관계 : 이 관계가 보편적으로 쓰입니다.  
+2. HAS-A 관계 : 이 관계는 포함의 형태로 표현하면, 두 클래스 간 연관성이 낮아지고, 변경 및 확장이 용이해집니다.  
+
