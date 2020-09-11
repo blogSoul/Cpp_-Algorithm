@@ -44,6 +44,7 @@ string solution(vector<string> participant, vector<string> completion) {
 // map을 사용하는 방식 
 // std::map container : Red-Black Tree를 사용해 키의 순서를 유지하므로 O(log n)을 가집니다.
 // std::unordered_map container : hash Table을 사용해 키의 순서를 유지하지 않습니다. key 분포에 따라 탐색 속도는 O(1) 이상의 시간 복잡도를 가집니다.
+/*
 #include<string>
 #include<vector>
 #include<iostream>
@@ -63,3 +64,4 @@ string solution(vector<string> participant, vector<string> completion) {
             return pair.first;
     }
 }
+*/
