@@ -66,7 +66,9 @@ int main() {
 	bool find=false;
     for (long i = begin; i <= n; ++i)
     {
-        sprintf(s, "%ld", i);
+        sprintf(s, "%ld", i); // 느립니다.
+        // int sprintf(char *buffer, const char *format, argument-list);
+        // printf 함수와 같이 서식에 맞춰 출력한다. 다만 출력하는 위치가 모니터가 아닌  buffer  배열일 뿐이다.
         sum = i;
 		for(int j=0;j<strlen(s);++j)
 			sum += s[j]-'0';
